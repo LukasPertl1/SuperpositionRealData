@@ -14,7 +14,7 @@ if __name__ == '__main__':
 
     num_features = dataset.num_features
     num_classes = dataset.num_classes
-    hidden_dims = [64, 64, 3]
+    hidden_dims = [12, 12, 3]
     model = GIN(num_features, hidden_dims, num_classes, layer = 3).to(device)
 
 
@@ -31,6 +31,6 @@ if __name__ == '__main__':
 
     plot_probe_directions(probe_directions)
 
-    scatter_plot(model, full_loader, device, desired_layer=3, concept_number = 1)
+    scatter_plot(model, full_loader, device, desired_layer=3, concept_number = 10)
 
 
