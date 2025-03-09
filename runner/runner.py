@@ -65,3 +65,5 @@ def run_probes(model, train_dataset, full_loader, test_loader, train_loader, des
         probe_directions.append(probe_direction)
 
     print(f'Probe directions: {probe_directions}')
+
+    return probe_directions
