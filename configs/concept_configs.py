@@ -9,7 +9,7 @@ concept_configs = [
     {"name": "Neuron 31", "concepts": [[['nx3C', 'X', True], 'OR', ['nx', 'Br', True]], [['is', 'Br', True]]], "combination_operator": "OR"},
     {"name": "Neuron 35", "concepts": [[['deg=1', '1', True], 'AND', ['ndeg=2', '2', True]], [['is', 'Br', True]]], "combination_operator": "OR"},
     {"name": "Neuron 56", "concepts": [[['ndeg=1', '1', False], 'AND', ['deg=3', '3', True]], [['nx', 'F', True]]], "combination_operator": "OR"},
-    {"name": "Neuron 50", "concepts": [[['nx', 'C', False], 'OR', ['nx', 'O', True]], [['is', 'C', False]]], "combination_operator": "AND"},
+    {"name": "Neuron 50", "concepts": [[['nx', 'C', True], 'OR', ['nx', 'O', False]], [['is', 'C', False]]], "combination_operator": "AND"},
     {"name": "Neuron 46", "concepts": [[['nx', 'C', True], 'AND', ['nx', 'N', True]]], "combination_operator": "AND"},
     {"name": "Neuron 52", "concepts": [[['nx', 'N', False], 'AND', ['deg=1', '1', True]], [['is', 'F', False]]], "combination_operator": "AND"},
     {"name": "Neuron 21", "concepts": [[['is', 'N', False], 'AND', ['deg=3', '3', True]], [['ndeg=1', '1', False]]], "combination_operator": "AND"},

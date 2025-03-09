@@ -118,7 +118,7 @@ def create_concept_mask(concepts, combination, graph_index):
     return final_mask
 
 
-def concatenate_masks(concepts, combination_operator, dataset):
+def concatenate_masks(concepts, combination_operator):
     masks = []
 
     dataset = TUDataset(root='/tmp/MUTAG', name='MUTAG')

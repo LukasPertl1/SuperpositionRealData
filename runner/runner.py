@@ -26,6 +26,8 @@ def run_probes(model, train_dataset, full_loader, test_loader, train_loader, des
     # Hidden embeddings (assumed to be shared across concepts)
     full_acc, hidden_embeddings = test_gin(model, full_loader, device, return_hidden=True, layer=desired_layer)
     print(f'Hidden_embeddings size: {hidden_embeddings.shape}')
+    embeddings_np = hidden_embeddings.cpu().detach().numpy()
+    print(embeddings_np)
 
     # Loop over each concept configuration
     for config in concept_configs:
@@ -34,7 +36,7 @@ def run_probes(model, train_dataset, full_loader, test_loader, train_loader, des
         combination_operator = config["combination_operator"]
 
         # Generate the feature mask (this uses your existing concatenate_masks() function).
-        feature_mask = concatenate_masks(concepts, combination_operator, dataset = dataset)
+        feature_mask = concatenate_masks(concepts, combination_operator)
         feature_mask = torch.tensor(feature_mask)
         print("\n====================================================")
         print(f"Processing concept with combination operator: {combination_operator}")
