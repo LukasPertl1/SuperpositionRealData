@@ -14,7 +14,7 @@ if __name__ == '__main__':
 
     num_features = dataset.num_features
     num_classes = dataset.num_classes
-    hidden_dims = [12, 12, 3]
+    hidden_dims = [16, 16, 3]
     model = GIN(num_features, hidden_dims, num_classes, layer = 3).to(device)
 
 
@@ -29,8 +29,14 @@ if __name__ == '__main__':
     
     plot_probe_direction_angles(probe_directions)
 
-    plot_probe_directions(probe_directions)
+    special = {
+        1: {'color': 'red', 'label': 'Concept 1'},
+        2: {'color': 'orange', 'label': 'Concept 2'},
+        10: {'color': 'blue', 'label': '(¬next-to(C) ∨ next-to(O)) ∧ ¬is(C)'},
+        15: {'color': 'green', 'label': 'Concept 15'},
+    }
+    fig, ax = plot_probe_directions(probe_directions, special_indices=special)
 
-    scatter_plot(model, full_loader, device, desired_layer=3, concept_number = 10)
+    scatter_plot(model, full_loader, device, desired_layer=3, concept_number = 15)
 
 

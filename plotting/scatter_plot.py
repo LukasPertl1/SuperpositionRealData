@@ -52,7 +52,7 @@ def scatter_plot(model, full_loader, device, desired_layer=3, concept_number=10)
     if embeddings_np.shape[1] == 2:
         plt.figure(figsize=(8, 6))
         plt.scatter(embeddings_np[mask_bool, 0], embeddings_np[mask_bool, 1],
-                    color='red', s=5, label='Concept Active')
+                    color='red', s=10, label='Concept Active')
         plt.scatter(embeddings_np[~mask_bool, 0], embeddings_np[~mask_bool, 1],
                     color='blue', s=5, alpha=0.1, label='Concept Inactive')
         plt.title("Scatter Plot of Hidden Embeddings with Concept Mask (2D)")

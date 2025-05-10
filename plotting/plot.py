@@ -2,102 +2,110 @@ import torch
 import numpy as np
 import matplotlib.pyplot as plt
 
-def plot_probe_directions(probe_directions):
-    """
-    Plots probe direction unit vectors. If the vectors are 2D,
-    it produces a 2D quiver plot; if 3D, a 3D quiver plot.
 
-    Special indices:
-      - Vector at index 1 is plotted in red.
-      - Vector at index 10 is plotted in blue.
-      - Vector at index 15 is plotted in green.
-
-    Parameters:
-        probe_directions (list[torch.Tensor] or torch.Tensor): A list of tensors
-            or a single tensor of shape (num_vectors, vector_dim).
+def plot_probe_directions(
+    probe_directions,
+    special_indices=None,
+    figsize=(6, 6),
+    arrow_kwargs=None
+):
     """
-    # If probe_directions is a list, concatenate it to form a single tensor.
+    Plot unit probe direction vectors in 2D or 3D with enhanced styling for publication.
+
+    Parameters
+    ----------
+    probe_directions : list[torch.Tensor] | torch.Tensor
+        A list of tensors or a single tensor of shape (N, D) containing vectors.
+    special_indices : dict[int, dict], optional
+        Mapping from vector index to dict of styling options, e.g.
+        {1: {'color': 'red', 'label': 'Concept A'}, 10: {'color': 'blue'}}.
+    figsize : tuple[int, int], default=(6, 6)
+        Figure size in inches.
+    arrow_kwargs : dict, optional
+        Default keyword arguments for arrows (passed to quiver), e.g.
+        {'pivot': 'mid', 'width': 0.005, 'headwidth': 3, 'headlength': 5}.
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+    ax : matplotlib.axes._subplots.AxesSubplot | mpl_toolkits.mplot3d.axes3d.Axes3D
+    """
+    # Handle input types
     if isinstance(probe_directions, list):
-        try:
-            vectors = torch.cat(probe_directions, dim=0)
-        except Exception as e:
-            print("Error concatenating probe_directions:", e)
-            return
+        vectors = torch.cat(probe_directions, dim=0)
     else:
         vectors = probe_directions
 
-    # Normalize vectors to unit length
-    norms = torch.norm(vectors, dim=1, keepdim=True)
-    unit_vectors = vectors / norms
+    # Normalize to unit vectors
+    norms = vectors.norm(dim=1, keepdim=True)
+    unit_vectors = (vectors / norms).cpu().numpy()
 
-    # Determine the dimensionality of the vectors
+    # Default special indices styling
+    special_indices = special_indices or {}
+    default_arrow_kwargs = {
+        'angles': 'xy',
+        'scale_units': 'xy',
+        'scale': 1,
+        'pivot': 'mid',
+        'width': 0.005,
+        'headwidth': 3,
+        'headlength': 5
+    }
+    if arrow_kwargs is not None:
+        default_arrow_kwargs.update(arrow_kwargs)
+
     dim = unit_vectors.shape[1]
 
+    # Create figure and axes
+    fig = plt.figure(figsize=figsize)
     if dim == 2:
-        x = unit_vectors[:, 0].numpy()
-        y = unit_vectors[:, 1].numpy()
-
-        plt.figure(figsize=(8, 6))
-        for i in range(len(x)):
-            if i == 1:
-                color = 'red'
-                label = 'Vector 1'
-            elif i == 10:
-                color = 'blue'
-                label = 'Vector 10'
-            elif i == 15:
-                color = 'green'
-                label = 'Vector 15'
-            else:
-                color = 'gray'
-                label = None
-            plt.quiver(0, 0, x[i], y[i], angles='xy', scale_units='xy', scale=1, 
-                       color=color, width=0.005, label=label)
-
-        plt.xlim(-1.2, 1.2)
-        plt.ylim(-1.2, 1.2)
-        plt.xlabel("X")
-        plt.ylabel("Y")
-        plt.title("2D Plot of Probe Direction Unit Vectors\n(Vector 1 in red, Vector 10 in blue)")
-        handles, labels = plt.gca().get_legend_handles_labels()
-        unique = dict(zip(labels, handles))
-        plt.legend(unique.values(), unique.keys())
-        plt.grid()
-        plt.show()
-
+        ax = fig.add_subplot(1, 1, 1)
+        ax.set_aspect('equal')
+        ax.set_xlim(-1.1, 1.1)
+        ax.set_ylim(-1.1, 1.1)
+        ax.set_xlabel('Dimension 1')
+        ax.set_ylabel('Dimension 2')
     elif dim == 3:
         from mpl_toolkits.mplot3d import Axes3D
-
-        x = unit_vectors[:, 0].numpy()
-        y = unit_vectors[:, 1].numpy()
-        z = unit_vectors[:, 2].numpy()
-
-        fig = plt.figure(figsize=(8, 6))
-        ax = fig.add_subplot(111, projection='3d')
-        for i in range(len(x)):
-            if i == 1:
-                color = 'red'
-                label = 'Vector 1'
-            elif i == 10:
-                color = 'blue'
-                label = 'Vector 10'
-            elif i == 15:
-                color = 'green'
-                label = 'Vector 15'
-            else:
-                color = 'gray'
-                label = None
-            ax.quiver(0, 0, 0, x[i], y[i], z[i], color=color, arrow_length_ratio=0.1, linewidth=1.5, label=label)
-        handles, labels = ax.get_legend_handles_labels()
-        unique = dict(zip(labels, handles))
-        ax.legend(unique.values(), unique.keys())
-        ax.set_xlim([-1.2, 1.2])
-        ax.set_ylim([-1.2, 1.2])
-        ax.set_zlim([-1.2, 1.2])
-        ax.set_xlabel("X")
-        ax.set_ylabel("Y")
-        ax.set_zlabel("Z")
-        ax.set_title("3D Plot of Probe Direction Unit Vectors\n(Vector 1 in red, Vector 10 in blue)")
-        plt.show()
+        ax = fig.add_subplot(1, 1, 1, projection='3d')
+        ax.set_xlim(-1.1, 1.1)
+        ax.set_ylim(-1.1, 1.1)
+        ax.set_zlim(-1.1, 1.1)
+        ax.set_xlabel('Dim 1')
+        ax.set_ylabel('Dim 2')
+        ax.set_zlabel('Dim 3')
     else:
-        print("Dim too high:", dim)
+        raise ValueError(f"Only 2D or 3D vectors supported, got dimension {dim}.")
+
+    # Plot vectors
+    for idx, vec in enumerate(unit_vectors):
+        kws = default_arrow_kwargs.copy()
+        style = special_indices.get(idx, {})
+        kws.update(style)
+
+        if dim == 2:
+            ax.quiver(
+                0, 0, vec[0], vec[1],
+                **{k: v for k, v in kws.items() if k in ['angles','scale_units','scale','pivot','width','headwidth','headlength']},
+                color=style.get('color', 'gray')
+            )
+        else:
+            ax.quiver(
+                0, 0, 0, vec[0], vec[1], vec[2],
+                length=1.0,
+                arrow_length_ratio=0.1,
+                normalize=True,
+                color=style.get('color', 'gray'),
+                linewidth=1.2
+            )
+
+    # Legend for special vectors
+    if any('label' in s for s in special_indices.values()):
+        handles = [plt.Line2D([0], [0], color=style.get('color'), lw=2) \
+                   for idx, style in special_indices.items() if 'label' in style]
+        labels = [style['label'] for idx, style in special_indices.items() if 'label' in style]
+        ax.legend(handles, labels, loc='upper right', frameon=False)
+
+    ax.grid(True, linestyle='--', alpha=0.5)
+    fig.tight_layout()
+    return fig, ax
