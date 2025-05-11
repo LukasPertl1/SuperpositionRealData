@@ -25,8 +25,6 @@ source .venv/bin/activate
 
 # 2. Install core requirements
 pip install torch torch-geometric matplotlib numpy
-# or simply:
-# pip install -r requirements.txt        # add one if you like
 ```
 
 The **MUTAG** dataset will auto-download to `/tmp/MUTAG` on first run.
@@ -39,7 +37,7 @@ The **MUTAG** dataset will auto-download to `/tmp/MUTAG` on first run.
 ## 🚀 Quick start
 
 ```bash
-python main.py
+python3 main.py
 ```
 
 This will
@@ -55,7 +53,7 @@ This will
 
 ```
 .
-├── concepts/              # concept masks (largely third-party, see “Citing”)
+├── concepts/              
 │   ├── basic_concepts.py
 │   ├── concept_mask.py
 │   ├── molecule_concepts.py
@@ -95,9 +93,9 @@ This will
 
 ## 📈 Interpreting the output
 
-* **Probe direction vectors** (`w`): weights of each linear probe; strong alignment with read-out weights ⇒ neuron encodes class signal.  
+* **Probe direction vectors** (`w`): weights of each linear probe + weights of readout layer; Important concepts seperate from trivial ones.
 * **Angle matrix**: pairwise cosine angles between probe directions to reveal concept similarity / orthogonality.  
-* **Scatter plot**: low-dimensional projection of hidden embeddings coloured by concept presence.
+* **Scatter plot**: hidden embeddings coloured by concept presence.
 
 ---
 
@@ -105,6 +103,6 @@ This will
 
 The concept-mask logic contained in **`concepts/`** is adapted from:
 
-> *[Full citation of the original paper / repository]*
+> *[Han Xuanyuan, Pietro Barbiero, Dobrik Georgiev, Lucie Charlotte Magister, and Pietro Li´o. Global Concept-Based Interpretability for Graph Neural Networks via Neuron Analysis, March 2023. URL. arXiv:2208.10609.]*
 
 Please cite that work if you build on this repository.
