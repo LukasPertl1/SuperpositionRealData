@@ -106,3 +106,6 @@ The concept-mask logic contained in **`concepts/`** is adapted from:
 > *[Han Xuanyuan, Pietro Barbiero, Dobrik Georgiev, Lucie Charlotte Magister, and Pietro Li´o. Global Concept-Based Interpretability for Graph Neural Networks via Neuron Analysis, March 2023. URL. arXiv:2208.10609.]*
 
 Please cite that work if you build on this repository.
+
+The remainder of the code (training, probing, plotting) is
+© 2025 Lukas Pertl and licensed under the MIT License (see LICENSE).
