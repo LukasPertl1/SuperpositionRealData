@@ -35,6 +35,9 @@ def test_gin(model, full_loader, device, return_hidden=True, layer=1):
             pred = out.argmax(dim=1)
             correct += int((pred == data.y).sum())
     acc = correct / len(full_loader.dataset)
+
+    weights = model.readout_direction()  # shape: [num_classes, hidden_dims[-1]]
+
     if return_hidden:
-        return acc, torch.cat(all_hidden, dim=0)
+        return acc, torch.cat(all_hidden, dim=0), weights
     return acc

@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 def plot_probe_directions(
     probe_directions,
+    weights,
     special_indices=None,
     figsize=(6, 6),
     arrow_kwargs=None
@@ -30,6 +31,10 @@ def plot_probe_directions(
     fig : matplotlib.figure.Figure
     ax : matplotlib.axes._subplots.AxesSubplot | mpl_toolkits.mplot3d.axes3d.Axes3D
     """
+    readout_vec = weights[0]
+    readout_vec = readout_vec.detach().cpu().numpy()
+    print(f'Readout direction: {readout_vec}')
+
     # Handle input types
     if isinstance(probe_directions, list):
         vectors = torch.cat(probe_directions, dim=0)
@@ -108,4 +113,19 @@ def plot_probe_directions(
 
     ax.grid(True, linestyle='--', alpha=0.5)
     fig.tight_layout()
+
+    # ── add the read-out arrow manually ────────────────────────────────
+    ax.quiver(
+        0, 0, 0,                   # tail of the arrow at the origin
+        readout_vec[0],            # x-component
+        readout_vec[1],            # y-component
+        readout_vec[2],            # z-component
+        length=1.0,
+        color='black',             # style as you wish
+        linewidth=2.5,
+        arrow_length_ratio=0.1,
+        label='Read-out'
+    )
+
+
     return fig, ax

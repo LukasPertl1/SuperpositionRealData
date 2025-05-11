@@ -24,7 +24,7 @@ def run_probes(model, train_dataset, full_loader, test_loader, train_loader, des
     probe_directions=[]
 
     # Hidden embeddings (assumed to be shared across concepts)
-    full_acc, hidden_embeddings = test_gin(model, full_loader, device, return_hidden=True, layer=desired_layer)
+    __, hidden_embeddings, weights = test_gin(model, full_loader, device, return_hidden=True, layer=desired_layer)
     print(f'Hidden_embeddings size: {hidden_embeddings.shape}')
     embeddings_np = hidden_embeddings.cpu().detach().numpy()
     print(embeddings_np)
@@ -68,4 +68,4 @@ def run_probes(model, train_dataset, full_loader, test_loader, train_loader, des
 
     print(f'Probe directions: {probe_directions}')
 
-    return probe_directions
+    return probe_directions, weights

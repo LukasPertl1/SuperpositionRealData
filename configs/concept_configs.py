@@ -1,7 +1,6 @@
 concept_configs = [
     {"name": "Neuron 28", "concepts": [[['is', 'Cl', False], 'AND', ['nx1C', 'X', True]], [['is', 'F', False]]], "combination_operator": "AND"},
     {"name": "Neuron 20", "concepts": [[['ndeg=1', '1', False], 'AND', ['nx3C', 'X', True]]], "combination_operator": "AND"},
-    {"name": "Neuron 44", "concepts": [[['ndeg=1', '1', False], 'AND', ['nx3C', 'X', True]], [['is', 'N', False]]], "combination_operator": "AND"},
     {"name": "Neuron 26", "concepts": [[['ndeg=3', '3', False], 'AND', ['deg=1', '1', True]], [['is', 'Br', True]]], "combination_operator": "OR"},
     {"name": "Neuron 57", "concepts": [[['is', 'F', False]], [['nx1C', 'X', True], 'OR', ['nx', 'Cl', True]]], "combination_operator": "AND"},
     {"name": "Neuron 23", "concepts": [[['is', 'C', True], 'AND', ['nx3C', 'X', True]], [['ndeg=3', '3', True]]], "combination_operator": "AND"},
@@ -17,4 +16,4 @@ concept_configs = [
     {"name": "Neuron 7", "concepts": [[['ndeg=3', '3', False], 'OR', ['nx1C', 'X', True]], [['is', 'N', False]]], "combination_operator": "AND"},
     {"name": "Neuron 14", "concepts": [[['is', 'Br', True]]], "combination_operator": "AND"},
     {"name": "Neuron 1", "concepts": [[['is', 'N', False], 'AND', ['nx3C', 'X', True]], [['ndeg=3', '3', True]]], "combination_operator": "AND"}
-]
+] 

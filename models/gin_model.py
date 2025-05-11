@@ -34,6 +34,17 @@ class GIN(torch.nn.Module):
 
         # Final linear layer for graph-level classification
         self.linear = nn.Linear(hidden_dims[-1], num_classes)
+    
+
+    def readout_direction(self):
+        """
+        Returns the weight matrix of the final linear layer.
+
+        Shape:
+            • (num_classes, hidden_dims[-1]).
+            • If num_classes == 1 this is a single row vector.
+        """
+        return self.linear.weight.detach().cpu()
 
     def forward(self, data, return_hidden=False, layer=3):
         """

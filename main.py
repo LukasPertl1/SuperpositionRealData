@@ -5,6 +5,7 @@ from plotting.angle_matrix import plot_probe_direction_angles
 from plotting.plot import plot_probe_directions
 from plotting.scatter_plot import scatter_plot
 import torch
+import matplotlib as mpl
 
 dataset, train_dataset, train_loader, test_loader, full_loader = load_mutag_dataset()
 
@@ -18,7 +19,7 @@ if __name__ == '__main__':
     model = GIN(num_features, hidden_dims, num_classes, layer = 3).to(device)
 
 
-    probe_directions = run_probes(model = model,
+    probe_directions, weights = run_probes(model = model,
                         train_dataset = train_dataset, 
                         full_loader = full_loader, 
                         test_loader = test_loader, 
@@ -29,14 +30,32 @@ if __name__ == '__main__':
     
     plot_probe_direction_angles(probe_directions)
 
-    special = {
-        1: {'color': 'red', 'label': 'Concept 1'},
-        2: {'color': 'orange', 'label': 'Concept 2'},
-        10: {'color': 'blue', 'label': '(¬next-to(C) ∨ next-to(O)) ∧ ¬is(C)'},
-        15: {'color': 'green', 'label': 'Concept 15'},
-    }
-    fig, ax = plot_probe_directions(probe_directions, special_indices=special)
+    mpl.rcParams['mathtext.fontset'] = 'stix'
+    mpl.rcParams['font.family']     = 'STIXGeneral'
 
-    scatter_plot(model, full_loader, device, desired_layer=3, concept_number = 15)
+    special = {
+        1: {
+            'color': 'red',
+            # use \wedge for AND, \neg for NOT
+            'label': 
+                r'$\exists\,n\in\mathcal{N}\colon\;\mathrm{deg}_n(1)\;\wedge\;'
+                r'\neg\text{next\_to}(3C)$'
+        },
+        9: {
+            'color': 'blue',
+            'label': r'$(\neg\,\text{next\_to}(C)\;\vee\;\text{next\_to}(O))\;\wedge\;\neg\,\text{is}(C)$'
+        },
+        14: {
+            'color': 'green',
+            'label': (
+                r'$\neg\exists\,n\in\mathcal{N}\colon\;\mathrm{deg}_n(1)\;\vee\;\mathrm{deg}(2)'
+                r'\;\vee\;\text{next\_to}(C)$'
+            )
+        },
+    }
+
+    fig, ax = plot_probe_directions(probe_directions, weights, special_indices=special)
+
+    scatter_plot(model, full_loader, device, desired_layer=3, concept_number = 1)
 
 

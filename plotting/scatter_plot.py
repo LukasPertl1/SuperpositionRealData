@@ -37,7 +37,7 @@ def scatter_plot(model, full_loader, device, desired_layer=3, concept_number=10)
     print(f'Number of nodes with concept active: {np.sum(mask_bool)}')
 
     # Get the hidden embeddings via test_gin (assumed to be a tensor of shape [num_nodes, hidden_dim])
-    acc, hidden_embeddings = test_gin(model, full_loader, device, return_hidden=True, layer=desired_layer)
+    acc, hidden_embeddings, __ = test_gin(model, full_loader, device, return_hidden=True, layer=desired_layer)
     print(f'Hidden embeddings shape: {hidden_embeddings.shape}')
     
     # Convert hidden embeddings to numpy array for plotting.
