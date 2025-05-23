@@ -2,7 +2,6 @@ import torch
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 def plot_probe_directions(
     probe_directions,
     weights,
@@ -31,21 +30,21 @@ def plot_probe_directions(
     fig : matplotlib.figure.Figure
     ax : matplotlib.axes._subplots.AxesSubplot | mpl_toolkits.mplot3d.axes3d.Axes3D
     """
-    readout_vec = weights[0]
-    readout_vec = readout_vec.detach().cpu().numpy()
+    # extract and log readout vector
+    readout_vec = weights[0].detach().cpu().numpy()
     print(f'Readout direction: {readout_vec}')
 
-    # Handle input types
+    # handle input types
     if isinstance(probe_directions, list):
         vectors = torch.cat(probe_directions, dim=0)
     else:
         vectors = probe_directions
 
-    # Normalize to unit vectors
+    # normalize to unit vectors
     norms = vectors.norm(dim=1, keepdim=True)
     unit_vectors = (vectors / norms).cpu().numpy()
 
-    # Default special indices styling
+    # default styling
     special_indices = special_indices or {}
     default_arrow_kwargs = {
         'angles': 'xy',
@@ -61,7 +60,7 @@ def plot_probe_directions(
 
     dim = unit_vectors.shape[1]
 
-    # Create figure and axes
+    # create figure and axes
     fig = plt.figure(figsize=figsize)
     if dim == 2:
         ax = fig.add_subplot(1, 1, 1)
@@ -71,7 +70,7 @@ def plot_probe_directions(
         ax.set_xlabel('Dimension 1')
         ax.set_ylabel('Dimension 2')
     elif dim == 3:
-        from mpl_toolkits.mplot3d import Axes3D
+        from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
         ax = fig.add_subplot(1, 1, 1, projection='3d')
         ax.set_xlim(-1.1, 1.1)
         ax.set_ylim(-1.1, 1.1)
@@ -82,16 +81,19 @@ def plot_probe_directions(
     else:
         raise ValueError(f"Only 2D or 3D vectors supported, got dimension {dim}.")
 
-    # Plot vectors
+    # plot all probe vectors
     for idx, vec in enumerate(unit_vectors):
-        kws = default_arrow_kwargs.copy()
         style = special_indices.get(idx, {})
-        kws.update(style)
-
         if dim == 2:
             ax.quiver(
                 0, 0, vec[0], vec[1],
-                **{k: v for k, v in kws.items() if k in ['angles','scale_units','scale','pivot','width','headwidth','headlength']},
+                angles=default_arrow_kwargs['angles'],
+                scale_units=default_arrow_kwargs['scale_units'],
+                scale=default_arrow_kwargs['scale'],
+                pivot=default_arrow_kwargs['pivot'],
+                width=default_arrow_kwargs['width'],
+                headwidth=default_arrow_kwargs['headwidth'],
+                headlength=default_arrow_kwargs['headlength'],
                 color=style.get('color', 'gray')
             )
         else:
@@ -104,28 +106,40 @@ def plot_probe_directions(
                 linewidth=1.2
             )
 
-    # Legend for special vectors
-    if any('label' in s for s in special_indices.values()):
-        handles = [plt.Line2D([0], [0], color=style.get('color'), lw=2) \
-                   for idx, style in special_indices.items() if 'label' in style]
-        labels = [style['label'] for idx, style in special_indices.items() if 'label' in style]
+    # add the read-out arrow
+    if dim == 2:
+        ax.quiver(
+            0, 0,
+            readout_vec[0], readout_vec[1],
+            angles=default_arrow_kwargs['angles'],
+            scale_units=default_arrow_kwargs['scale_units'],
+            scale=default_arrow_kwargs['scale'],
+            pivot=default_arrow_kwargs['pivot'],
+            width=default_arrow_kwargs['width'] * 1.5,
+            headwidth=default_arrow_kwargs['headwidth'] * 1.2,
+            headlength=default_arrow_kwargs['headlength'] * 1.2,
+            color='black',
+            linewidths=2.5,
+            label='Read-out'
+        )
+    elif dim == 3:
+        ax.quiver(
+            0, 0, 0,
+            readout_vec[0], readout_vec[1], readout_vec[2],
+            length=1.0,
+            arrow_length_ratio=0.1,
+            normalize=True,
+            color='black',
+            linewidth=2.5,
+            label='Read-out'
+        )
+
+    # legend for special + read-out vectors
+    handles, labels = ax.get_legend_handles_labels()
+    if handles:
         ax.legend(handles, labels, loc='upper right', frameon=False)
 
     ax.grid(True, linestyle='--', alpha=0.5)
     fig.tight_layout()
-
-    # ── add the read-out arrow manually ────────────────────────────────
-    ax.quiver(
-        0, 0, 0,                   # tail of the arrow at the origin
-        readout_vec[0],            # x-component
-        readout_vec[1],            # y-component
-        readout_vec[2],            # z-component
-        length=1.0,
-        color='black',             # style as you wish
-        linewidth=2.5,
-        arrow_length_ratio=0.1,
-        label='Read-out'
-    )
-
 
     return fig, ax
